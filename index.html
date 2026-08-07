@@ -229,7 +229,7 @@
 
   <dialog id="manualMatchDialog">
     <form method="dialog" id="manualMatchForm" class="dialog-card">
-      <button class="dialog-close" value="cancel" aria-label="Close">×</button>
+      <button class="dialog-close" type="submit" value="cancel" formnovalidate aria-label="Close">×</button>
       <div class="eyebrow" data-i18n="admin.manualEyebrow">MANUAL MATCH</div><h2 id="manualMatchTitle" data-i18n="admin.manualTitle">Create or edit a match</h2><p data-i18n="admin.manualText">Choose two or three active members. Exact group size, language and shared availability rules still apply.</p>
       <label><span data-i18n="admin.person1">Participant 1</span><select name="p1" required></select></label>
       <label><span data-i18n="admin.person2">Participant 2</span><select name="p2" required></select></label>
@@ -241,7 +241,7 @@
 
   <dialog id="signinDialog">
     <form method="dialog" id="signinForm" class="dialog-card">
-      <button class="dialog-close" value="cancel" aria-label="Close">×</button>
+      <button class="dialog-close" type="submit" value="cancel" formnovalidate aria-label="Close">×</button>
       <div class="eyebrow" data-i18n="signin.eyebrow">DEMO SIGN IN</div><h2 data-i18n="signin.title">Continue as an existing demo user</h2><p data-i18n="signin.text">Enter a seeded demo email. No password is used in this local MVP.</p>
       <label><span data-i18n="field.email">Email address</span><input name="signinEmail" type="email" required placeholder="anna.mueller@bwk-demo.de"></label>
       <div id="signinMessage" class="form-message"></div>
