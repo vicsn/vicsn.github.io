@@ -20,7 +20,7 @@
         <button data-route="home" data-i18n="nav.home">Home</button>
         <button data-route="how" data-i18n="nav.how">How it works</button>
         <button data-route="preferences" data-auth-only hidden data-i18n="nav.profile">My profile</button>
-        <button data-route="match" data-auth-only hidden data-i18n="nav.match">My match</button>
+        <button data-route="match" data-auth-only hidden data-i18n="nav.match">My matches</button>
         <button data-route="admin" data-admin-only hidden data-i18n="nav.admin">Admin</button>
       </nav>
       <div class="header-actions">
@@ -178,15 +178,19 @@
     </section>
 
     <section class="view shell section" data-view="match" hidden>
-      <div id="matchEmpty" class="empty-state" hidden><div class="empty-icon">↔</div><h1 data-i18n="match.emptyTitle">No active match yet.</h1><p data-i18n="match.emptyText">Complete your profile or ask an administrator to run matching.</p><button class="button button-primary" data-route="questionnaire" data-i18n="match.profile">Complete profile</button></div>
-      <div id="matchContent" hidden>
-        <div class="page-intro"><div class="eyebrow" data-i18n="match.eyebrow">YOUR CURRENT MATCH</div><h1 data-i18n="match.title">You have a conversation to look forward to.</h1><p id="matchReason"></p></div>
-        <div class="match-layout">
-          <article class="people-panel" id="matchPeople"></article>
-          <aside class="schedule-panel"><div class="status-pill" id="matchStatus">Awaiting date</div><h2 data-i18n="match.choose">Choose a meeting time</h2><p data-i18n="match.chooseText">These options are generated from the shared availability in test mode.</p><div id="dateOptions" class="date-options"></div><div id="calendarResult" class="calendar-result" aria-live="polite"></div></aside>
+      <div id="matchEmpty" class="empty-state" hidden><div class="empty-icon">↔</div><h1 data-i18n="match.emptyTitle">No matches yet.</h1><p data-i18n="match.emptyText">Complete your profile or ask an administrator to run matching.</p><button class="button button-primary" data-route="questionnaire" data-i18n="match.profile">Complete profile</button></div>
+      <div id="matchPage" hidden>
+        <div class="page-intro"><div class="eyebrow" data-i18n="match.pageEyebrow">MY MATCHES</div><h1 data-i18n="match.pageTitle">Your Lunchclub matches</h1><p data-i18n="match.pageLead">See your current introduction and a concise record of past conversations.</p></div>
+        <div id="matchCurrent" class="match-current" hidden>
+          <div class="page-intro compact-intro"><div class="eyebrow" data-i18n="match.eyebrow">CURRENT MATCH</div><h2 data-i18n="match.title">You have a conversation to look forward to.</h2><p id="matchReason"></p></div>
+          <div class="match-layout">
+            <article class="people-panel" id="matchPeople"></article>
+            <aside class="schedule-panel"><div class="status-pill" id="matchStatus">Awaiting date</div><h3 data-i18n="match.choose">Choose a meeting time</h3><p data-i18n="match.chooseText">These options are generated from the shared availability in test mode.</p><div id="dateOptions" class="date-options"></div><div id="calendarResult" class="calendar-result" aria-live="polite"></div></aside>
+          </div>
+          <div class="topic-panel"><div><span class="mini-label" data-i18n="match.topicsLabel">SUGGESTED CONVERSATION STARTERS</span><h3 data-i18n="match.topicsTitle">Start with what you already have in common.</h3></div><ul id="matchTopics"></ul></div>
+          <div class="feedback-panel"><div><h2 data-i18n="match.feedbackTitle">After the conversation</h2><p data-i18n="match.feedbackText">Use this demo form to simulate the follow-up email.</p></div><div id="usefulnessRating" class="usefulness-rating" hidden><p data-i18n="match.ratePrompt">How useful was this conversation?</p><div class="rating-scale" id="ratingScale" role="group" aria-label="Usefulness rating"></div></div><div class="feedback-actions" id="feedbackActions"><button class="button button-outline" data-feedback="not-held" data-i18n="match.notHeld">Meeting did not happen</button><button class="button button-primary" data-feedback="useful" data-i18n="match.useful">Meeting happened & was useful</button></div></div>
         </div>
-        <div class="topic-panel"><div><span class="mini-label" data-i18n="match.topicsLabel">SUGGESTED CONVERSATION STARTERS</span><h3 data-i18n="match.topicsTitle">Start with what you already have in common.</h3></div><ul id="matchTopics"></ul></div>
-        <div class="feedback-panel"><div><h2 data-i18n="match.feedbackTitle">After the conversation</h2><p data-i18n="match.feedbackText">Use this demo form to simulate the follow-up email.</p></div><div class="feedback-actions"><button class="button button-outline" data-feedback="not-held" data-i18n="match.notHeld">Meeting did not happen</button><button class="button button-primary" data-feedback="useful" data-i18n="match.useful">Meeting happened & was useful</button></div></div>
+        <section class="match-history" id="matchHistory" hidden><div class="page-intro compact-intro"><div class="eyebrow" data-i18n="match.historyEyebrow">MATCH HISTORY</div><h2 data-i18n="match.historyTitle">Previous matches</h2></div><div id="matchHistoryList" class="match-history-list"></div></section>
       </div>
     </section>
 

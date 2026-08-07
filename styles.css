@@ -186,6 +186,23 @@ legend { font-weight: 850; font-size: 20px; letter-spacing: -.02em; margin-botto
 .feedback-panel h2 { font-size: 25px; margin-bottom: 5px; }
 .feedback-panel p { margin: 0; }
 .feedback-actions { display: flex; gap: 8px; }
+.usefulness-rating { display: grid; gap: 12px; min-width: min(100%, 420px); }
+.usefulness-rating p { margin: 0; font-weight: 700; }
+.rating-scale { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+.rating-btn { min-height: 44px; border: 1px solid #c8d2cb; border-radius: 10px; background: white; cursor: pointer; font-weight: 800; color: var(--bwk-dark); }
+.rating-btn:hover { border-color: var(--bwk-dark); background: var(--soft-green); }
+.compact-intro h2 { font-size: 30px; margin: 8px 0 10px; }
+.compact-intro p { margin: 0; }
+.match-current { margin-bottom: 28px; }
+.match-history { margin-top: 8px; }
+.match-history-list { display: grid; gap: 10px; }
+.match-history-item { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; justify-content: space-between; padding: 14px 16px; border: 1px solid var(--line); border-radius: 12px; background: white; }
+.match-history-item strong { font-size: 15px; }
+.match-history-item span { color: var(--muted); font-size: 13px; }
+.match-history-meta { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.history-tag { display: inline-flex; align-items: center; border-radius: 999px; padding: 4px 10px; font-size: 11px; font-weight: 800; letter-spacing: .03em; text-transform: uppercase; }
+.history-tag.useful { background: var(--soft-green); color: var(--bwk-dark); }
+.history-tag.missed { background: #f3f4f3; color: #5f675f; }
 .settings-stack { overflow: hidden; }
 .setting-row { display: flex; align-items: center; justify-content: space-between; gap: 30px; padding: 24px; border-bottom: 1px solid var(--line); }
 .setting-row:last-child { border-bottom: 0; }
@@ -270,6 +287,7 @@ dialog::backdrop { background: rgba(10,25,15,.5); backdrop-filter: blur(2px); }
   .demo-account-btn span { margin-top: 2px; }
   .feedback-panel, .setting-row, .integration-preview, .admin-head, .cta-panel { align-items: stretch; flex-direction: column; }
   .feedback-actions, .admin-actions { flex-direction: column; }
+  .rating-scale { grid-template-columns: repeat(5, 1fr); }
   .stats-grid { grid-template-columns: 1fr 1fr; }
   .test-banner .shell { align-items: flex-start; padding-top: 6px; padding-bottom: 6px; }
 }
