@@ -130,17 +130,46 @@
   const toast = (message) => { const el = $('#toast'); el.textContent = message; el.classList.add('show'); clearTimeout(toast.t); toast.t=setTimeout(()=>el.classList.remove('show'),2800); };
   const prefersReducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  const MATCH_BUBBLE_MS = 1500;
+
+  function spawnMatchBubbles(btn, layer) {
+    if (!layer || !btn) return;
+    const rect = btn.getBoundingClientRect();
+    const count = 12;
+    for (let i = 0; i < count; i++) {
+      const bubble = document.createElement('span');
+      bubble.className = 'match-bubble';
+      const size = 10 + Math.random() * 24;
+      const x = rect.left + rect.width * (0.12 + Math.random() * 0.76);
+      const y = rect.top + rect.height * (0.35 + Math.random() * 0.55);
+      bubble.style.setProperty('--bubble-size', `${size}px`);
+      bubble.style.setProperty('--bubble-x', `${x}px`);
+      bubble.style.setProperty('--bubble-y', `${y}px`);
+      bubble.style.setProperty('--bubble-drift', `${(Math.random() - 0.5) * 90}px`);
+      bubble.style.setProperty('--bubble-rise', `${100 + Math.random() * 160}px`);
+      bubble.style.setProperty('--bubble-delay', `${Math.random() * 0.2}s`);
+      bubble.style.setProperty('--bubble-duration', `${0.85 + Math.random() * 0.55}s`);
+      bubble.addEventListener('animationend', () => bubble.remove(), { once: true });
+      layer.appendChild(bubble);
+    }
+  }
+
   function playTsunami(then) {
     if (prefersReducedMotion()) { then(); return; }
-    const hero = $('.hero-visual');
     const btn = $('#heroFindMatch');
-    btn?.classList.add('is-dam');
-    hero?.classList.add('is-tsunami');
+    const layer = $('#bubbleLayer');
+    if (!btn || !layer) { then(); return; }
+    layer.replaceChildren();
+    btn.classList.add('is-bubbling');
+    btn.setAttribute('disabled', '');
+    spawnMatchBubbles(btn, layer);
+    setTimeout(() => spawnMatchBubbles(btn, layer), 350);
     setTimeout(() => {
-      btn?.classList.remove('is-dam');
-      hero?.classList.remove('is-tsunami');
       then();
-    }, 1200);
+      btn.classList.remove('is-bubbling');
+      btn.removeAttribute('disabled');
+      $('#bubbleLayer')?.replaceChildren();
+    }, MATCH_BUBBLE_MS);
   }
   const initials = (m) => `${m.firstName?.[0]||''}${m.lastName?.[0]||''}`.toUpperCase();
   const currentUser = () => state.members.find(m => m.id === currentUserId);
@@ -597,8 +626,9 @@
   $$('[data-route]').forEach(el => el.addEventListener('click', (e) => {
     pendingDemoEmail = el.dataset.demoEmail || (el.dataset.mode === 'test' ? 'lisa.test@bwk-demo.de' : null);
     const dest = el.dataset.route;
-    if (el.dataset.tsunami) {
+    if (el.hasAttribute('data-tsunami')) {
       e.preventDefault();
+      e.stopPropagation();
       playTsunami(() => route(dest));
       return;
     }
