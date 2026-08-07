@@ -19,7 +19,6 @@
       <nav class="desktop-nav" aria-label="Primary navigation">
         <button data-route="home" data-i18n="nav.home">Home</button>
         <button data-route="how" data-i18n="nav.how">How it works</button>
-        <button data-route="membership" data-i18n="nav.membership">Membership</button>
         <button data-route="preferences" data-auth-only hidden data-i18n="nav.profile">My profile</button>
         <button data-route="match" data-auth-only hidden data-i18n="nav.match">My match</button>
         <button data-route="admin" data-admin-only hidden data-i18n="nav.admin">Admin</button>
@@ -109,15 +108,6 @@
         <li><span>7</span><div><h3 data-i18n="how.s7t">Share feedback</h3><p data-i18n="how.s7d">Confirm that the meeting happened and tell us if the connection was useful.</p></div></li>
       </ol>
       <div class="cta-panel"><div><h2 data-i18n="how.ctaTitle">Ready to see your match?</h2><p data-i18n="how.ctaText">The local demo takes about two minutes to complete.</p></div><button class="button button-primary" data-route="signup" data-i18n="home.cta">Find my match</button></div>
-    </section>
-
-    <section class="view shell section" data-view="membership" hidden>
-      <div class="page-intro"><div class="eyebrow" data-i18n="membership.eyebrow">MEMBERSHIP</div><h1 data-i18n="membership.title">A member benefit with a simple test path.</h1><p data-i18n="membership.lead">Regular matching is for verified paying members. Selected test members can experience one match before deciding whether to continue.</p></div>
-      <div class="pricing-grid">
-        <article class="price-card"><div class="price-kicker" data-i18n="membership.test">TEST MEMBER</div><h2 data-i18n="membership.oneMatch">One match</h2><p data-i18n="membership.testText">A controlled way to experience Lunchclub once.</p><ul><li data-i18n="membership.test1">One questionnaire</li><li data-i18n="membership.test2">One professional match</li><li data-i18n="membership.test3">Scheduling and follow-up</li><li data-i18n="membership.test4">Automatic deactivation after the match</li></ul><button class="button button-outline" data-route="signup" data-mode="test" data-i18n="membership.try">Try test access</button></article>
-        <article class="price-card highlighted"><div class="recommended" data-i18n="membership.recommended">FOR BWK MEMBERS</div><div class="price-kicker" data-i18n="membership.paid">VERIFIED MEMBER</div><h2 data-i18n="membership.ongoing">Ongoing matching</h2><p data-i18n="membership.paidText">Use Lunchclub at the frequency that works for you.</p><ul><li data-i18n="membership.paid1">Verified access</li><li data-i18n="membership.paid2">Up to your selected matches per quarter</li><li data-i18n="membership.paid3">Editable preferences</li><li data-i18n="membership.paid4">Pause or leave at any time</li></ul><button class="button button-primary" data-route="signup" data-i18n="nav.join">Join Lunchclub</button></article>
-      </div>
-      <p class="fine-print" data-i18n="membership.note">In this MVP, verification uses a local test list. Production must connect to the official BWK member source.</p>
     </section>
 
     <section class="view shell section narrow" data-view="signup" hidden>
