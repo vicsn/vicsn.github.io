@@ -18,6 +18,7 @@ body { margin: 0; color: var(--ink); background: #fff; font-family: Inter, ui-sa
 button, input, select, textarea { font: inherit; }
 button { color: inherit; }
 a { color: inherit; }
+[hidden] { display: none !important; }
 .shell { width: min(1180px, calc(100% - 40px)); margin: 0 auto; }
 .skip-link { position: fixed; left: 12px; top: -60px; background: var(--ink); color: white; padding: 10px 14px; z-index: 999; border-radius: 8px; }
 .skip-link:focus { top: 12px; }
@@ -76,6 +77,37 @@ p { color: var(--muted); }
 .match-score { position: absolute; right: 28px; bottom: 28px; width: 85px; height: 85px; border-radius: 50%; background: var(--ink); color: white; display: grid; place-items: center; align-content: center; z-index: 3; box-shadow: var(--shadow); }
 .match-score strong { font-size: 23px; line-height: 1; }
 .match-score span { font-size: 10px; opacity: .75; margin-top: 4px; }
+.tsunami-wave, .tsunami-splash { position: absolute; pointer-events: none; opacity: 0; }
+.tsunami-wave { inset: 0; z-index: 4; background: linear-gradient(105deg, transparent 35%, rgba(120,196,255,.55) 48%, rgba(70,160,230,.85) 52%, rgba(89,189,63,.35) 58%, transparent 72%); transform: translateX(-120%) skewX(-8deg); }
+.tsunami-splash { left: 50%; top: 50%; width: 140%; aspect-ratio: 1; z-index: 6; transform: translate(-50%, -50%) scale(.2); border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,.55) 0%, rgba(120,196,255,.25) 35%, transparent 68%); }
+.hero-visual.is-tsunami { overflow: hidden; }
+.hero-visual.is-tsunami .tsunami-wave { animation: tsunami-sweep 1s cubic-bezier(.45,.05,.2,1) forwards; }
+.hero-visual.is-tsunami .tsunami-splash { animation: tsunami-splash 0.55s 0.42s ease-out forwards; }
+.hero-visual.is-tsunami .match-card { animation: card-wash-in 0.75s 0.55s cubic-bezier(.34,1.2,.64,1) forwards; }
+.hero-visual.is-tsunami .connection-line,
+.hero-visual.is-tsunami .match-score { animation: card-wash-in 0.65s 0.72s cubic-bezier(.34,1.2,.64,1) forwards; }
+.hero-visual.is-tsunami .match-card,
+.hero-visual.is-tsunami .connection-line,
+.hero-visual.is-tsunami .match-score { opacity: 0; transform: translateY(28px) rotate(var(--wash-tilt, 0deg)); }
+.hero-visual.is-tsunami .primary-card { --wash-tilt: -7deg; }
+.hero-visual.is-tsunami .secondary-card { --wash-tilt: 5deg; }
+.button.is-dam { background: linear-gradient(180deg, #9aab9e 0%, #7d8f82 100%) !important; color: #fff !important; box-shadow: inset 0 -5px 0 #65766a, 0 8px 20px rgba(40,60,48,.18) !important; transform: none !important; position: relative; overflow: hidden; }
+.button.is-dam::before { content: ""; position: absolute; inset: 18% 28%; border-top: 2px solid rgba(255,255,255,.35); transform: rotate(-18deg) scaleX(0); transform-origin: left; animation: dam-crack 0.35s 0.12s ease-out forwards; }
+.button.is-dam::after { content: ""; position: absolute; inset: 38% 42%; border-top: 2px solid rgba(20,30,24,.35); transform: rotate(24deg) scaleX(0); transform-origin: right; animation: dam-crack 0.28s 0.28s ease-out forwards; }
+@keyframes tsunami-sweep { 0% { opacity: 0; transform: translateX(-120%) skewX(-8deg); } 12% { opacity: 1; } 100% { opacity: 0; transform: translateX(115%) skewX(-8deg); } }
+@keyframes tsunami-splash { 0% { opacity: 0; transform: translate(-50%, -50%) scale(.2); } 35% { opacity: 1; transform: translate(-50%, -50%) scale(1); } 100% { opacity: 0; transform: translate(-50%, -50%) scale(1.35); } }
+@keyframes card-wash-in { 0% { opacity: 0; transform: translateY(34px) rotate(var(--wash-tilt, 0deg)); } 70% { opacity: 1; transform: translateY(-4px) rotate(calc(var(--wash-tilt, 0deg) * .25)); } 100% { opacity: 1; transform: translateY(0) rotate(0deg); } }
+@keyframes dam-crack { to { transform: rotate(var(--crack-angle, -18deg)) scaleX(1); } }
+.button.is-dam::after { --crack-angle: 24deg; }
+@media (prefers-reduced-motion: reduce) {
+  .hero-visual.is-tsunami .tsunami-wave,
+  .hero-visual.is-tsunami .tsunami-splash,
+  .hero-visual.is-tsunami .match-card,
+  .hero-visual.is-tsunami .connection-line,
+  .hero-visual.is-tsunami .match-score,
+  .button.is-dam::before,
+  .button.is-dam::after { animation: none !important; }
+}
 .section { padding-top: 90px; padding-bottom: 90px; }
 .compact-section { padding-top: 75px; padding-bottom: 95px; }
 .section-heading { margin-bottom: 36px; }

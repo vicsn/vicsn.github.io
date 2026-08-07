@@ -128,6 +128,20 @@
   const $ = (s, root=document) => root.querySelector(s);
   const $$ = (s, root=document) => [...root.querySelectorAll(s)];
   const toast = (message) => { const el = $('#toast'); el.textContent = message; el.classList.add('show'); clearTimeout(toast.t); toast.t=setTimeout(()=>el.classList.remove('show'),2800); };
+  const prefersReducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function playTsunami(then) {
+    if (prefersReducedMotion()) { then(); return; }
+    const hero = $('.hero-visual');
+    const btn = $('#heroFindMatch');
+    btn?.classList.add('is-dam');
+    hero?.classList.add('is-tsunami');
+    setTimeout(() => {
+      btn?.classList.remove('is-dam');
+      hero?.classList.remove('is-tsunami');
+      then();
+    }, 1200);
+  }
   const initials = (m) => `${m.firstName?.[0]||''}${m.lastName?.[0]||''}`.toUpperCase();
   const currentUser = () => state.members.find(m => m.id === currentUserId);
 
@@ -580,9 +594,15 @@
     applyDemoAccount(email, context);
   });
 
-  $$('[data-route]').forEach(el => el.addEventListener('click', () => {
+  $$('[data-route]').forEach(el => el.addEventListener('click', (e) => {
     pendingDemoEmail = el.dataset.demoEmail || (el.dataset.mode === 'test' ? 'lisa.test@bwk-demo.de' : null);
-    route(el.dataset.route);
+    const dest = el.dataset.route;
+    if (el.dataset.tsunami) {
+      e.preventDefault();
+      playTsunami(() => route(dest));
+      return;
+    }
+    route(dest);
   }));
   $('#languageToggle').addEventListener('click',()=>{lang=lang==='en'?'de':'en';localStorage.setItem(LANG_KEY,lang);applyLanguage();});
 
