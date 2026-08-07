@@ -124,7 +124,7 @@
       <div class="form-progress"><span class="is-current">1</span><i></i><span>2</span><i></i><span>3</span><div><small data-i18n="signup.progress1">Account</small><small data-i18n="signup.progress2">Questionnaire</small><small data-i18n="signup.progress3">Match</small></div></div>
       <div class="form-card">
         <div class="page-intro small"><div class="eyebrow" data-i18n="signup.eyebrow">GET STARTED</div><h1 data-i18n="signup.title">First, confirm your access.</h1><p data-i18n="signup.lead">Use one of the demo emails shown below. In production, this check will use the verified BWK member list.</p></div>
-        <div class="demo-box"><strong data-i18n="signup.demoTitle">Demo accounts</strong><code>anna.mueller@bwk-demo.de</code><span data-i18n="signup.demoPaid">verified paying member</span><code>lisa.test@bwk-demo.de</code><span data-i18n="signup.demoTest">approved test member</span><code>admin@bwk-demo.de</code><span data-i18n="signup.demoAdmin">administrator</span></div>
+        <div id="demoAccountPicker-signup" class="demo-box"></div>
         <form id="signupForm" novalidate>
           <div class="field-grid">
             <label><span data-i18n="field.first">First name</span><input required name="firstName" autocomplete="given-name"></label>
@@ -146,6 +146,7 @@
     <section class="view shell section questionnaire-layout" data-view="questionnaire" hidden>
       <aside class="question-side"><div class="eyebrow" data-i18n="question.eyebrow">YOUR PROFILE</div><h2 data-i18n="question.sideTitle">A better profile makes a better match.</h2><p data-i18n="question.sideText">Exact constraints are handled first. The remaining answers improve relevance.</p><div class="profile-mini"><div class="avatar" id="questionAvatar">?</div><div><strong id="questionName">New member</strong><span id="questionEmail"></span></div></div></aside>
       <div class="form-card">
+        <div id="demoAccountPicker-questionnaire" class="demo-box"></div>
         <div class="form-progress small-progress"><span class="is-done">✓</span><i></i><span class="is-current">2</span><i></i><span>3</span></div>
         <form id="questionnaireForm" novalidate>
           <fieldset><legend data-i18n="question.background">Professional background</legend>
@@ -243,6 +244,7 @@
     <form method="dialog" id="signinForm" class="dialog-card">
       <button class="dialog-close" type="submit" value="cancel" formnovalidate aria-label="Close">×</button>
       <div class="eyebrow" data-i18n="signin.eyebrow">DEMO SIGN IN</div><h2 data-i18n="signin.title">Continue as an existing demo user</h2><p data-i18n="signin.text">Enter a seeded demo email. No password is used in this local MVP.</p>
+      <div id="demoAccountPicker-signin" class="demo-box demo-box-compact"></div>
       <label><span data-i18n="field.email">Email address</span><input name="signinEmail" type="email" required placeholder="anna.mueller@bwk-demo.de"></label>
       <div id="signinMessage" class="form-message"></div>
       <button class="button button-primary button-full" value="default" data-i18n="signin.button">Sign in</button>
