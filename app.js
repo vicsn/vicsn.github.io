@@ -204,6 +204,7 @@
   function route(name) {
     const user = currentUser();
     if (['preferences','match','questionnaire'].includes(name) && !user) { name = 'signup'; }
+    if (name === 'signup' && user) { name = user.access === 'admin' ? 'admin' : 'questionnaire'; }
     if (name === 'admin' && user?.access !== 'admin') { name = 'home'; toast(lang==='de'?'Admin-Zugang erforderlich.':'Admin access required.'); }
     $$('.view').forEach(v => { const active = v.dataset.view === name; v.hidden = !active; v.classList.toggle('is-active', active); });
     window.scrollTo({top:0,behavior:'smooth'});
@@ -242,14 +243,12 @@
     const user = currentUser();
     $$('[data-auth-only]').forEach(el => el.hidden = !user);
     $$('[data-admin-only]').forEach(el => el.hidden = user?.access !== 'admin');
+    $$('[data-guest-only]').forEach(el => el.hidden = !!user);
     const btn = $('#authButton');
-    const join = $('#joinButton');
     if (user) {
       btn.textContent = `${user.firstName} · ${lang==='de'?'Abmelden':'Sign out'}`;
-      join.hidden = true;
     } else {
       btn.textContent = i18n[lang]['nav.signin'];
-      join.hidden = false;
     }
   }
 
@@ -308,7 +307,13 @@
   function renderQuestionnaire() {
     const user=currentUser(); if (!user) return;
     $('#questionName').textContent=`${user.firstName} ${user.lastName}`; $('#questionEmail').textContent=user.email; $('#questionAvatar').textContent=initials(user);
-    const form=$('#questionnaireForm'); if (!user.profile) { form.reset(); return; }
+    const form=$('#questionnaireForm');
+    if (!user.profile) {
+      form.reset();
+      const demo=demoAccountByEmail(user.email);
+      if (demo?.profile) fillQuestionnaireForm(demo.profile, form);
+      return;
+    }
     fillQuestionnaireForm(user.profile, form);
   }
 
