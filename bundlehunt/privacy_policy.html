@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Privacy Policy — Bundle Hunt for Vinted</title>
+  <meta name="description" content="Privacy policy for the Bundle Hunt for Vinted browser extension.">
+  <style>
+    :root {
+      color-scheme: light dark;
+      font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      --page: #f5f7f7;
+      --card: #ffffff;
+      --text: #183437;
+      --muted: #587174;
+      --accent: #087f7a;
+      --border: #dbe5e5;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --page: #102123;
+        --card: #172d30;
+        --text: #eefafa;
+        --muted: #b1c7c8;
+        --accent: #73d9d1;
+        --border: #315054;
+      }
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--page);
+      color: var(--text);
+    }
+
+    main {
+      width: min(760px, calc(100% - 32px));
+      margin: 48px auto;
+      padding: clamp(24px, 5vw, 48px);
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: 0 16px 50px rgb(0 0 0 / 8%);
+    }
+
+    h1, h2 { line-height: 1.2; }
+    h1 { margin: 0 0 8px; font-size: clamp(2rem, 5vw, 2.75rem); }
+    h2 { margin-top: 2rem; font-size: 1.25rem; }
+    p, li { color: var(--muted); }
+    strong { color: var(--text); }
+    a { color: var(--accent); }
+    .date { margin: 0 0 2rem; }
+    footer { margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Privacy Policy</h1>
+      <p class="date"><strong>Bundle Hunt for Vinted — Unofficial</strong><br>Effective September 4, 2026</p>
+    </header>
+
+    <p>Bundle Hunt helps users find separate marketplace listings offered by the same seller. The extension operates locally in the user's browser and has no developer-operated server, analytics, advertising, or tracking.</p>
+
+    <h2>Information handled</h2>
+    <ul>
+      <li>Search terms and selected categories entered in the extension are stored locally in Chrome so they can be restored later.</li>
+      <li>The current marketplace URL is checked when the user clicks the extension's toolbar button.</li>
+      <li>Public listing information returned by the marketplace—including item details, seller usernames, and seller IDs—is processed locally to produce search results and optional CSV exports.</li>
+      <li>Requests are sent directly from the user's browser to the Vinted website over HTTPS. The extension does not read, collect, export, or store passwords or authentication-cookie values.</li>
+    </ul>
+
+    <h2>How information is used</h2>
+    <p>Information is used only to provide the extension's bundle-search, diagnostics, and CSV-export features. It is not sent to the developer, sold, used for advertising, or shared with data brokers. Vinted receives the search requests needed to return marketplace results and handles them under its own terms and privacy policy.</p>
+
+    <h2>Storage and retention</h2>
+    <p>Search preferences remain in Chrome's local extension storage until the user changes them, clears the extension's data, or uninstalls the extension. Search results remain in the open tab. CSV files are created locally and saved only when the user selects <strong>Export CSV</strong>.</p>
+
+    <h2>Browser permissions</h2>
+    <ul>
+      <li><strong>activeTab:</strong> permits access only to the tab on which the user invokes the extension.</li>
+      <li><strong>scripting:</strong> inserts the extension's packaged interface and styles after the toolbar button is clicked. No remote code is executed.</li>
+      <li><strong>storage:</strong> saves search terms and selected categories locally.</li>
+    </ul>
+
+    <h2>Limited Use</h2>
+    <p>The use of information received from Chrome APIs adheres to the Chrome Web Store User Data Policy, including its Limited Use requirements. Information is used only to provide or improve the extension's single user-facing purpose.</p>
+
+    <h2>Contact and policy changes</h2>
+    <p>Privacy questions can be submitted through the developer contact or support link on the extension's Chrome Web Store listing. Material changes to this policy will be published at this URL with an updated effective date.</p>
+
+    <footer>
+      <p>Bundle Hunt is an independent, unofficial tool. It is not affiliated with, endorsed by, or produced by Vinted. Vinted is a trademark of its respective owner.</p>
+    </footer>
+  </main>
+</body>
+</html>
