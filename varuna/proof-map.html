@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Varuna Soundness · Proof Structure Map</title>
+<style>
+:root {
+  --bg: #eef1f7;
+  --surface: #ffffff;
+  --surface-2: #f6f8fc;
+  --ink: #16203a;
+  --muted: #5a6784;
+  --line: #d4dbe8;
+  --accent: #0e8fa3;
+  --c-proven: #2f9e63;
+  --c-hyp: #c9861a;
+  --c-floor: #c2503c;
+  --c-incoming: #0e8fa3;
+  --c-object: #7683a0;
+  --shadow: 0 1px 2px rgba(22,32,58,.06), 0 8px 28px rgba(22,32,58,.08);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0a0f1e; --surface: #111a2e; --surface-2: #0e1728; --ink: #dde5f4;
+    --muted: #8795ae; --line: #263248; --accent: #2cc3d6;
+    --c-proven: #46b979; --c-hyp: #e0a63c; --c-floor: #e0715b;
+    --c-incoming: #2cc3d6; --c-object: #8695b2;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="light"] {
+  --bg: #eef1f7; --surface: #ffffff; --surface-2: #f6f8fc; --ink: #16203a;
+  --muted: #5a6784; --line: #d4dbe8; --accent: #0e8fa3;
+  --c-proven: #2f9e63; --c-hyp: #c9861a; --c-floor: #c2503c;
+  --c-incoming: #0e8fa3; --c-object: #7683a0;
+}
+:root[data-theme="dark"] {
+  --bg: #0a0f1e; --surface: #111a2e; --surface-2: #0e1728; --ink: #dde5f4;
+  --muted: #8795ae; --line: #263248; --accent: #2cc3d6;
+  --c-proven: #46b979; --c-hyp: #e0a63c; --c-floor: #e0715b;
+  --c-incoming: #2cc3d6; --c-object: #8695b2;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+.mono { font-family: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace; }
+header.top {
+  padding: 18px 22px 14px;
+  border-bottom: 1px solid var(--line);
+  display: flex; flex-wrap: wrap; align-items: flex-end; gap: 8px 22px;
+}
+header.top h1 { font-size: 18px; font-weight: 640; margin: 0; letter-spacing: -.01em; }
+a.back { color: var(--accent); font-size: 13px; text-decoration: none; font-weight: 600; }
+a.back:hover { text-decoration: underline; }
+header.top p { margin: 3px 0 0; color: var(--muted); font-size: 13px; max-width: 72ch; }
+.state {
+  margin-left: auto; align-self: center;
+  font-family: ui-monospace, monospace; font-size: 11.5px; color: var(--muted);
+  border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px;
+  background: var(--surface-2); white-space: nowrap;
+}
+.layout { display: grid; grid-template-columns: 1fr 336px; gap: 0; }
+@media (max-width: 1040px) { .layout { grid-template-columns: 1fr; } }
+.stage { min-width: 0; padding: 12px 12px 18px; }
+.toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 0 6px 12px; }
+.toolbar .lbl { font-size: 11px; text-transform: uppercase; letter-spacing: .09em; color: var(--muted); margin-right: 2px; }
+.chip {
+  font: inherit; font-size: 12.5px; cursor: pointer;
+  background: var(--surface); color: var(--ink);
+  border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px;
+  display: inline-flex; align-items: center; gap: 7px;
+}
+.chip:hover { border-color: var(--accent); }
+.chip[aria-pressed="true"] { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, var(--surface)); }
+.chip .dot { width: 9px; height: 9px; border-radius: 50%; }
+.chip:focus-visible, .node:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.mapwrap { background: var(--surface-2); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; box-shadow: var(--shadow); }
+svg.map { display: block; width: 100%; min-width: 0; height: auto; }
+.terr { fill: var(--th); opacity: .5; stroke: var(--ts); stroke-width: 1; stroke-dasharray: 3 5; rx: 16; }
+.terr-label { font-size: 14px; text-transform: uppercase; letter-spacing: .14em; font-weight: 700; fill: var(--ts); }
+.map-title { font-size: 24px; font-weight: 650; fill: var(--ink); letter-spacing: .015em; }
+.edge { fill: none; stroke-width: 2; opacity: .55; }
+.edge.entails { stroke: var(--ink); }
+.edge.discharges { stroke: var(--accent); stroke-dasharray: 7 5; }
+.edge.rests { stroke: var(--c-floor); stroke-dasharray: 1.5 5; stroke-linecap: round; }
+.edge.hot { opacity: 1; stroke-width: 3; }
+.edge.dim { opacity: .05; }
+.node { cursor: pointer; }
+.node .box { fill: var(--nf); stroke: var(--ns); stroke-width: 1.75; rx: 9; filter: drop-shadow(0 1px 1px rgba(0,0,0,.05)); }
+.node .label { font-size: 15.5px; font-weight: 650; fill: var(--ink); dominant-baseline: middle; }
+.node.goal .box { fill: var(--accent); stroke: var(--accent); }
+.node.goal .label { fill: #fff; }
+.node.dim { opacity: .2; }
+.rail { border-left: 1px solid var(--line); padding: 14px 18px 26px; min-width: 0; }
+@media (max-width: 1040px) { .rail { border-left: none; border-top: 1px solid var(--line); } }
+.rail h2 { font-size: 11px; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); margin: 0 0 10px; }
+.legend { display: grid; gap: 9px; margin-bottom: 20px; }
+.legend .row { display: flex; align-items: center; gap: 10px; font-size: 12.5px; }
+.legend .swatch { width: 26px; height: 0; border-top-width: 3px; border-top-style: solid; flex: none; }
+.legend .sq { width: 15px; height: 15px; border-radius: 4px; border: 1.75px solid; flex: none; }
+.legend .muted { color: var(--muted); }
+.detail { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+.detail .badge { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; padding: 3px 9px; border-radius: 999px; border: 1px solid; margin-bottom: 10px; }
+.detail .title { font-family: ui-monospace, monospace; font-size: 15px; font-weight: 600; margin: 0 0 2px; }
+.detail .anchor { font-family: ui-monospace, monospace; font-size: 12px; color: var(--muted); word-break: break-word; margin-bottom: 12px; }
+.detail .role { font-size: 13.5px; margin: 0 0 14px; }
+.detail .conns { display: grid; gap: 7px; }
+.detail .conns .c { display: flex; gap: 8px; align-items: baseline; font-size: 12.5px; }
+.detail .conns .verb { font-size: 10.5px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); flex: none; min-width: 100px; }
+.detail .conns .verb.discharges { color: var(--accent); }
+.detail .conns .verb.rests { color: var(--c-floor); }
+.detail .conns .to { font-family: ui-monospace, monospace; }
+.detail .conns .via { font-family: ui-monospace, monospace; font-size: 10.5px; color: var(--muted); }
+.detail .empty { color: var(--muted); font-size: 13px; }
+.detail .hint { font-size: 12.5px; color: var(--muted); margin: 12px 0 0; }
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div>
+    <a class="back" href="./">Security analysis</a>
+    <h1>Varuna Soundness · Proof Structure Map</h1>
+    <p>
+      How a knowledge-soundness proof of the deployed Varuna verifier is
+      intended to fit together — the theorems, the assumptions they still
+      carry, and what remains outside Lean. Green is proved; the
+      remaining holes are the BLS12-377 pin, computational FS rewinding,
+      and the named floors.
+    </p>
+  </div>
+  <div class="state">V3 endpoint</div>
+</header>
+
+<div class="layout">
+  <div class="stage">
+    <div class="toolbar" id="filters">
+      <span class="lbl">Show</span>
+      <button class="chip" data-f="all" aria-pressed="true">All</button>
+      <button class="chip" data-f="proven"><span class="dot" style="background:var(--c-proven)"></span>Proven</button>
+      <button class="chip" data-f="hyp"><span class="dot" style="background:var(--c-hyp)"></span>Hypothesis</button>
+      <button class="chip" data-f="floor"><span class="dot" style="background:var(--c-floor)"></span>Out-of-Lean</button>
+      <button class="chip" data-f="object"><span class="dot" style="background:var(--c-object)"></span>Definitions</button>
+    </div>
+    <div class="mapwrap">
+      <svg class="map" id="map" viewBox="0 0 1680 1100" role="img" aria-label="Varuna proof structure map"></svg>
+    </div>
+  </div>
+  <aside class="rail">
+    <h2>Legend</h2>
+    <div class="legend">
+      <div class="row"><span class="swatch" style="border-top-color:var(--ink)"></span>entails — B follows from its incoming input(s)</div>
+      <div class="row"><span class="swatch" style="border-top-color:var(--accent);border-top-style:dashed"></span>discharges — A proves away assumption B</div>
+      <div class="row"><span class="swatch" style="border-top-color:var(--c-floor);border-top-style:dashed"></span>rests on — B is an assumption needed by A</div>
+      <div class="row"><span class="sq" style="border-color:var(--c-proven);background:color-mix(in srgb,var(--c-proven) 11%,var(--surface))"></span>Proven theorem</div>
+      <div class="row"><span class="sq" style="border-color:var(--c-hyp);background:color-mix(in srgb,var(--c-hyp) 11%,var(--surface))"></span>Hypothesis in statement</div>
+      <div class="row"><span class="sq" style="border-color:var(--c-floor);background:color-mix(in srgb,var(--c-floor) 11%,var(--surface))"></span>Out-of-Lean assumption</div>
+      <div class="row"><span class="sq" style="border-color:var(--c-object);background:color-mix(in srgb,var(--c-object) 11%,var(--surface))"></span>Definition — a claim or construction</div>
+      <div class="row"><span class="sq" style="border-color:var(--accent);background:var(--accent)"></span>Top-level result</div>
+    </div>
+    <h2>Detail</h2>
+    <div class="detail" id="detail">
+      <p class="empty">Hover or click a node to see what it is, its Lean anchor, and every theorem it connects to.</p>
+      <p class="hint">The spine runs down the left: accepting proof → FS challenges → PC openings → AHP checks → R1CS. Source-pinned snarkVM samples sit in the Faithfulness group at the top.</p>
+    </div>
+  </aside>
+</div>
+
+<script>
+const SVGNS = "http://www.w3.org/2000/svg";
+const COL = c => 130 + c * 236;
+const ROW = r => 100 + r * 118;
+
+const territories = [
+  { id:'faith', label:'Faithfulness', cells:[[1,0],[2,0]], h:'#b0873a' },
+  { id:'ahp', label:'AHP · PIOPs', cells:[[0,4],[1,4],[0,5],[1,5],[0,6]], h:'#6f7bd6', headroom:28 },
+  { id:'rel', label:'R1CS relation', cells:[[0,7],[1,7],[2,7]], h:'var(--c-proven)', headroom:26 },
+  { id:'pc', label:'Polynomial commitment', cells:[[2,3],[3,3],[2,4]], h:'#a06fb0', labelSide:'right' },
+  { id:'fs', label:'Fiat–Shamir', cells:[[2,1],[3,1],[2,2]], h:'#c15f86', labelSide:'right', headroom:28 },
+  { id:'sz', label:'Schwartz–Zippel', cells:[[3,5],[3,6]], h:'var(--c-incoming)', labelSide:'right' },
+  { id:'floor', label:'Assumptions · outside Lean', cells:[[0,8],[1,8],[2,8],[3,8],[4,8],[5,8]], h:'var(--c-floor)' },
+];
+
+const nodes = [
+  { id:'rustVerifier', c:0, r:0, w:230, label:'deployed verifier', status:'object',
+    anchor:'snarkVM/ submodule · Varuna.snarkVMPin',
+    role:'The Rust verifier validators run, pinned as a git submodule. A typed Lean model of its accept predicate sits next to this node; the zero-eval LC coefficients of a captured proof are re-checked in Lean (Fingerprint.lean). The group-level MSM / pairing assembly is outside Lean.' },
+  { id:'spotCheck', c:2, r:0, w:220, label:'source-pinned samples', status:'proven',
+    anchor:'Varuna.sample_selector_eval · Varuna.sample_lcWithZeroEval',
+    role:'Spot checks against the pinned snarkVM tree: LC names, V3 squeeze counts, selector scale |H_i|/|H|, four-term matrix b, padding at ω^0=1, KZG pairing equation, toy-field decide fixtures. The captured-proof fingerprint is the pinned-to-Rust node.' },
+  { id:'pinnedRust', c:1, r:0, w:200, label:'pinned to Rust', status:'proven',
+    anchor:'Varuna.Fingerprint.matrix_coeffs · Varuna.Fingerprint.matrix_model',
+    role:'Ironwood-style fingerprint. One honest snarkVM V3 hiding-mode proof, captured from the pinned tree (fixtures/fingerprint, test-only prover instrumentation, since the verifier sees only combined openings). Kernel decide over the BLS12-377 scalar field: every coefficient snarkVM assembles for rowcheck_zerocheck, lineval_sumcheck, and matrix_sumcheck equals Lean’s formula, each LC vanishes, and the scalar forms are the model (linevalEval_eq_scalar, matrixTerm_eq_scalar). Also pins row(γ)·col(γ) ≠ row_col(γ): Lean’s matrixBPoly agrees with the deployed b only on K. The captured η_A is not 1. Trusted: that the capture came from the pinned tree. MSM / pairing assembly and byte encodings stay outside.' },
+  { id:'accept', c:0, r:1, w:210, label:'accepting proof', status:'proven',
+    anchor:'Varuna.TypedProof.accepts · Varuna.typedAHPAccepts_iff',
+    role:'Typed accept: the three zero-eval LCs vanish and the batch combination has no live claim. Boolean predicate agrees with the Prop. Byte-level encodings stay a floor.' },
+  { id:'fsTranscript', c:0, r:2, w:210, label:'FS challenges', status:'proven',
+    anchor:'Varuna.challenge_eq_ro · Varuna.hasPrepareThird_V3',
+    role:'V3 absorb-then-squeeze: first combiners, α only, then prepare_third (η_A, η_B, η_C), β, δ, γ. Each challenge is ro of the prefix before that squeeze. Poseidon = RO remains a floor.' },
+  { id:'pcOpen', c:0, r:3, w:210, label:'PC openings', status:'proven',
+    anchor:'Varuna.kzgCheck_honest · Varuna.inspectOpening_break',
+    role:'Sonic-KZG openings of AHP oracles. Completeness is honest p(β)·g, and the hiding check is e(C − v g − random_v gamma_g, h) = e(w, βh − z h). A constant blinding shifts the commitment along gamma_g. Under the algebraic-adversary floor, an accepted opening whose value differs from the evaluation of the prover’s representation is a computed trapdoor break: a nonzero polynomial with the SRS trapdoor as a root. The same split applies to a hiding opening of both generators (hidingOpening_extract). Two distinct openings of one commitment also give a pairing-product identity. Hardness of both breaks rests on the pairing floor. Pairing independence of g and gamma_g is a hypothesis of the hiding binding.' },
+  { id:'ahpEq', c:0, r:4, w:240, label:'AHP verifier eqns', status:'proven',
+    anchor:'Varuna.AHPVerifierChecks.accepts · Varuna.v3_chain',
+    role:'The three virtual linear combinations snarkVM checks evaluate to zero: rowcheck_zerocheck, lineval_sumcheck, matrix_sumcheck. v3_chain composes them into Az ∘ Bz = Cz on R, with the mask sum equal to zero.' },
+  { id:'rowcheck', c:1, r:4, label:'rowcheck', status:'proven',
+    anchor:'Varuna.rowcheck_on_domain · Varuna.rowcheck_extract',
+    role:'σ_A σ_B − σ_C = h₀(α) v_H(α). A zero residual implies the Hadamard identity on H; an accepting challenge with no inspectResidual break yields the same. Completeness is the honest quotient.' },
+  { id:'lincheck', c:1, r:5, label:'lincheck', status:'proven',
+    anchor:'Varuna.univariate_sum · Varuna.sum_linevalPoly',
+    role:'Univariate / lineval sumcheck on the faithful f = s + Σ_M η_M M̂(α,X) ẑ(X): f = h₁ v_C + X g₁ + σ/|C|, so ∑_C f = σ, and ∑_C M̂(α,c) ẑ(c) = LDE(Mz)(α) (linevalTarget_eq_mzPoly). The mask sum ∑_C s enters this identity.' },
+  { id:'zkSim', c:2, r:5, w:210, label:'ZK simulator', status:'proven',
+    anchor:'Varuna.simulateLineval_eq_real · Varuna.simulation_extractable',
+    role:'Honest-verifier AHP simulator, query bound 1. maskAt programs one opening outside the domain and leaves domain values unchanged. simulateLineval builds the lineval polynomial from the public input; simulateLineval_eq_real absorbs a real witness into the ZK mask, and the honest sumcheck witness agrees. simulateHidingLineval_accepts opens that polynomial with a constant blinding. simulation_extractable says the simulated opening checks, and a fresh algebraic hiding opening is a trapdoor break or the represented value. Non-ZK mode drops the mask, so the witness cannot be moved. This is one opening, not unique-response extractability of the whole SNARK.' },
+  { id:'matrixSC', c:0, r:6, w:230, label:'matrix sumcheck', status:'proven',
+    anchor:'Varuna.matrix_extract · Varuna.matrix_sumcheck_value',
+    role:'Rational / matrix sumcheck: a − b(Xg+σ) = h₂ v_K on the sparse row·col·val encoding. On K, a(κ)=b(κ)(κ g(κ)+σ). With the subgroup Lagrange closed form, each a(κ)/b(κ) is val·L_row(α)·L_col(β), so the sumcheck proves |K|σ = M̂(α,β), the claim lineval consumes (matrix_sumcheck_value).' },
+  { id:'indexer', c:1, r:6, label:'indexer oracles', status:'proven',
+    anchor:'Varuna.holographicEval_at_nodes · Varuna.rowOracle_eval',
+    role:'Sparse A, B, C become row/col/val interpolants on the nonzero domain K. Evaluating those oracles at a K-node recovers the stored entry, and the holographic sum at domain nodes recovers the matrix.' },
+  { id:'r1csEmpty', c:0, r:7, w:210, label:'empty R1CS', status:'proven',
+    anchor:'Varuna.satisfies_nil · Varuna.hadamardSat_zero',
+    role:'An empty sparse constraint list is satisfied by any assignment, and the Hadamard form with m = 0 holds. This is the base case of the sparse ↔ dense equivalence.' },
+  { id:'mulConstraint', c:1, r:7, w:230, label:'mul constraint', status:'proven',
+    anchor:'Varuna.mulConstraint_holds_iff · Varuna.toy_mul_holds',
+    role:'The constraint (x)(y)=(out) holds iff the assigned values multiply. A concrete toy instance 3 · 5 = 15 over 𝔽₁₇ is checked. Every circuit is a composition of rows of this shape.' },
+  { id:'hadamardIff', c:2, r:7, w:250, label:'sparse ↔ Hadamard', status:'proven',
+    anchor:'Varuna.satisfies_iff_hadamard · Varuna.formatted_toy_iff',
+    role:'Sparse snarkVM constraints are equivalent to Az ∘ Bz = Cz for the dense matrices they encode, including duplicate columns and implicit zeros, once every variable index is < n and the assignment is formatted (z[0] = 1, |x| = 2^k).' },
+  { id:'r1csRel', c:3, r:7, w:220, label:'R1CS relation', status:'proven',
+    anchor:'Varuna.satisfies_of_rows · Varuna.satisfies_iff_zmod',
+    role:'The SNARK relation itself: knowledge of z such that Az ∘ Bz = Cz, with public prefix x. The Int residue relation is the ZMod p Hadamard identity (satisfies_iff_zmod), and the row identity gives it once the index encodes the constraint list (satisfies_of_rows, the index = circuit floor made precise).' },
+  { id:'capstone', c:4, r:7, w:250, label:'knowledge soundness', status:'proven',
+    anchor:'Varuna.V3Endpoint.sound · Varuna.v3_chain',
+    role:'V3 capstone: accepting rowcheck and lineval with true matrix claims and no computed break yield a zero mask sum and Az ∘ Bz = Cz on R (v3_chain). V3Endpoint.sound gives each matrix its own nonzero domain and derives the matrix residual from matrixEval plus inspectResidual. sound_of_openings reduces ẑ, h₁, g₁, and the matrix witnesses. sound_of_combined_matrix is the δ batch. matrix_sumcheck_of_selector is the selector-batched sum. PreprocessingAHP.sound is the same chain as public-coin rounds.' },
+  { id:'maskSum', c:2, r:6, w:220, label:'mask sum = 0', status:'proven',
+    anchor:'Varuna.v3_chain',
+    role:'V3 squeezes η_A, η_B, and η_C after the mask commitment and the sums. The lineval combination is e + η_A(t_A − σ_A) + η_B(t_B − σ_B) + η_C(t_C − σ_C). No batch break forces e = 0 and σ_M = t_M, and the rows are Az ∘ Bz = Cz (v3_chain).' },
+  { id:'szBad', c:3, r:5, label:'SZ bad set', status:'proven',
+    anchor:'Varuna.szBadSet · Varuna.card_szBadSet_le_natDegree',
+    role:'The finite set of roots of a nonzero polynomial. Cardinality ≤ degree (univariate Schwartz–Zippel). Each residual instantiates this; a hit is computed break data.' },
+  { id:'vanishing', c:4, r:5, w:230, label:'v_H(α)=0 ⇔ α∈H', status:'proven',
+    anchor:'Varuna.EvalDomain.vanishing_eq_zero_iff · Varuna.EvalDomain.eval_lagrange_self',
+    role:'On a multiplicative subgroup H of size 2^k, the vanishing polynomial is X^|H|-1, matching snarkVM EvaluationDomain. Lagrange basis evaluates to 1 at one node and 0 at the others.' },
+  { id:'goodChal', c:3, r:6, w:200, label:'good challenge', status:'proven',
+    anchor:'Varuna.card_filter_inspectResidual_le · Varuna.ahp_error',
+    role:'Counting over any finite challenge set S (snarkVM: 252-bit AHP, 168-bit PC challenges): a nonzero residual has at most deg bad challenges, a one-weight combination at most one, and an adaptive prover over α, β, γ breaks on at most (d_R+d_L+d_M)|S|² of |S|³ triples, with the residual degrees computed from the prover’s degree bounds (ahp_error_concrete). This discharges the inspect-returns-none hypotheses on the AHP rungs in probability.' },
+  { id:'batching', c:2, r:4, w:250, label:'batching + extra round', status:'proven',
+    anchor:'Varuna.inspectBatch_accepts · Varuna.selector_mul_vanishing',
+    role:'Multi-circuit combiners (first of each family is 1), snarkVM selectors s = (v_H/v_{H_i})·(|H_i|/|H|), and the prepare-third round: α does not see those sums; η_A, η_B, η_C do. Sage is single-circuit; snarkVM is the source of truth.' },
+  { id:'sonicPC', c:3, r:3, label:'Sonic PC', status:'proven',
+    anchor:'Varuna.kzgCheck · Varuna.LinearCombination.eval_add',
+    role:'Labeled polynomials, degree bounds, and linear combinations including the three AHP virtual commitments that must evaluate to zero. Pairing groups are abstract. knowledgeSoundness_bls restates the capstone at ZMod bls12_377_r; primality of that modulus is a Fact. Fingerprint.q_eq_bls12_377_r shows the captured modulus is that number.' },
+  { id:'forking', c:3, r:2, label:'FS query charging', status:'proven',
+    anchor:'Varuna.fs_query_charge · Varuna.fs_break_count',
+    role:'Lazy random oracle: the adversary’s i-th fresh query is answered by the i-th entry of a uniform tape in S^Q. With at most b bad answers per query, at most Q·b·|S|^(Q-1) tapes let it hit one. fs_v2_squeeze_charge reads the bad set of each squeeze off the transcript (Schwartz–Zippel roots at α, β, γ; one-weight inspectBatch breaks at the combiner squeezes) and charges that count. Forks and collisions stay computed data. Poseidon = RO remains a floor.' },
+  { id:'poseidonRO', c:2, r:8, w:220, label:'Poseidon = RO', status:'floor',
+    anchor:'modelling boundary, not an axiom',
+    role:'The deployed Poseidon sponge is identified with the programmable random oracle the forking lemmas talk about. The oracle model is in Lean; the identification with Poseidon is not.' },
+  { id:'pairing', c:3, r:8, w:230, label:'pairing / trapdoor hardness', status:'floor',
+    anchor:'modelling boundary, not an axiom',
+    role:'Pairing-product breaks and recovering the SRS trapdoor (q-DLOG) are assumed infeasible on BLS12-377. Lean exhibits the break data (pairingBreak_of_double_opening, inspectOpening_break); it does not prove hardness.' },
+  { id:'agm', c:5, r:8, w:220, label:'algebraic adversary', status:'floor',
+    anchor:'modelling boundary, not an axiom',
+    role:'The prover outputs, for every group element, its representation over the SRS powers. Ironwood makes the same restriction. It is what lets Lean read polynomials off commitments (ProofView) and turn a wrong opening into a trapdoor break.' },
+  { id:'srs', c:1, r:8, label:'SRS / setup', status:'floor',
+    anchor:'modelling boundary, not an axiom',
+    role:'The universal updatable SRS is well-formed and its toxic waste is unknown. Outside the soundness argument proper.' },
+  { id:'bytes', c:4, r:8, w:220, label:'byte encodings', status:'floor',
+    anchor:'modelling boundary, not an axiom',
+    role:'Domain-separator bytes, field/group encodings, and Poseidon parameters. The Lean model is typed and post-decoding, like Ironwood’s fingerprint boundary.' },
+  { id:'vkfaith', c:0, r:8, w:220, label:'index = circuit', status:'floor',
+    anchor:'modelling boundary, not an axiom',
+    role:'The verifying key / index fed to the verifier is the holographic encoding of the circuit the statement claims. Dual of circuit-gadget verification, which is a different project.' },
+];
+
+const edges = [
+  ['rustVerifier', 'pinnedRust', 'entails'],
+  ['rustVerifier', 'spotCheck', 'entails'],
+  ['spotCheck', 'pinnedRust', 'entails'],
+  ['rustVerifier', 'accept', 'entails'],
+  ['accept', 'fsTranscript', 'entails'],
+  ['fsTranscript', 'pcOpen', 'entails'],
+  ['pcOpen', 'ahpEq', 'entails'],
+  ['ahpEq', 'rowcheck', 'entails'],
+  ['ahpEq', 'lincheck', 'entails'],
+  ['ahpEq', 'matrixSC', 'entails'],
+  ['indexer', 'matrixSC', 'entails', 'holographicEval_at_nodes'],
+  ['rowcheck', 'r1csRel', 'entails', 'rowcheck_on_domain'],
+  ['lincheck', 'r1csRel', 'entails', 'univariate_sum'],
+  ['matrixSC', 'r1csRel', 'entails', 'matrix_on_domain'],
+  ['r1csEmpty', 'r1csRel', 'entails', 'satisfies_nil · hadamardSat_zero'],
+  ['mulConstraint', 'r1csRel', 'entails', 'mulConstraint_holds_iff'],
+  ['hadamardIff', 'r1csRel', 'entails', 'satisfies_iff_hadamard'],
+  ['r1csRel', 'capstone', 'entails'],
+  ['szBad', 'goodChal', 'entails', 'card_szBadSet_le_natDegree'],
+  ['vanishing', 'rowcheck', 'entails', 'vanishing_eq_zero_iff'],
+  ['vanishing', 'lincheck', 'entails', 'sum_eval_of_natDegree_lt'],
+  ['vanishing', 'matrixSC', 'entails', 'vanishing_dvd_of_eval_eq_zero'],
+  ['goodChal', 'rowcheck', 'discharges', 'rowcheck_extract'],
+  ['goodChal', 'lincheck', 'discharges', 'univariate_extract'],
+  ['goodChal', 'matrixSC', 'discharges', 'matrix_extract'],
+  ['sonicPC', 'pcOpen', 'entails', 'kzgCheck_honest'],
+  ['forking', 'fsTranscript', 'entails'],
+  ['batching', 'ahpEq', 'entails'],
+  ['pcOpen', 'pairing', 'rests'],
+  ['pcOpen', 'agm', 'rests'],
+  ['lincheck', 'maskSum', 'discharges', 'v3_chain'],
+  ['lincheck', 'zkSim', 'entails', 'simulateLineval_eq_real'],
+  ['pcOpen', 'zkSim', 'entails', 'simulation_extractable'],
+  ['fsTranscript', 'poseidonRO', 'rests'],
+  ['forking', 'poseidonRO', 'rests'],
+  ['capstone', 'srs', 'rests'],
+  ['capstone', 'vkfaith', 'rests'],
+  ['capstone', 'bytes', 'rests'],
+  ['pinnedRust', 'bytes', 'rests'],
+];
+
+const edgeRoutes = {
+  'r1csRel:capstone': [{ x: COL(3) + 120, y: ROW(7) }],
+  'rowcheck:r1csRel': [{ x: COL(2) - 40, y: ROW(5) + 40 }],
+  'goodChal:rowcheck': [{ x: COL(2) + 40, y: ROW(5) }],
+  'fsTranscript:poseidonRO': [{ x: COL(2) - 30, y: ROW(5) + 10 }, { x: COL(2) - 10, y: ROW(7) + 20 }],
+  'pcOpen:pairing': [{ x: COL(4) - 20, y: ROW(4) }, { x: COL(4) - 10, y: ROW(7) }],
+};
+
+const statusColor = { proven:'--c-proven', hyp:'--c-hyp', floor:'--c-floor', object:'--c-object', goal:'--accent' };
+const statusName = { proven:'Proven', hyp:'Hypothesis', floor:'Out-of-Lean assumption', object:'Definition', goal:'Top-level' };
+const relPhrase = {
+  'out-entails': ['→', 'entails'],
+  'out-discharges': ['→', 'discharges'],
+  'out-rests': ['→', 'rests on'],
+  'in-entails': ['←', 'follows from'],
+  'in-discharges': ['←', 'discharged by'],
+  'in-rests': ['←', 'relied on by'],
+};
+
+const byId = {};
+nodes.forEach(n => {
+  n.cx = COL(n.c) + (n.dx || 0);
+  n.cy = ROW(n.r);
+  const ch = n.label.length;
+  n.w = n.w || Math.max(150, Math.min(270, ch * 12.4 + 40));
+  n.h = 48;
+  byId[n.id] = n;
+});
+
+const adj = {};
+nodes.forEach(n => { adj[n.id] = []; });
+edges.forEach((e, i) => {
+  adj[e[0]].push({ i, other: e[1], kind: e[2], dir: 'out', via: e[3] });
+  adj[e[1]].push({ i, other: e[0], kind: e[2], dir: 'in', via: e[3] });
+});
+
+const svg = document.getElementById('map');
+function el(tag, attrs) {
+  const e = document.createElementNS(SVGNS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  return e;
+}
+
+const defs = el('defs', {});
+[['entails', 'var(--ink)'], ['discharges', 'var(--accent)'], ['rests', 'var(--c-floor)']].forEach(([k, c]) => {
+  const m = el('marker', { id: 'ar-' + k, viewBox: '0 0 10 10', refX: '9', refY: '5', markerWidth: '7.5', markerHeight: '7.5', orient: 'auto-start-reverse' });
+  m.appendChild(el('path', { d: 'M0,0 L10,5 L0,10 z', fill: c }));
+  defs.appendChild(m);
+});
+svg.appendChild(defs);
+
+const mapTitle = el('text', { x: 840, y: 46, 'text-anchor': 'middle', class: 'map-title' });
+mapTitle.textContent = 'Formal Verification of Varuna';
+svg.appendChild(mapTitle);
+
+const terrLayer = el('g', {});
+const terrLabelLayer = el('g', {});
+const nodeAt = {};
+nodes.forEach(n => { nodeAt[n.c + ',' + n.r] = n; });
+territories.forEach(t => {
+  let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
+  t.cells.forEach(([c, r]) => {
+    const n = nodeAt[c + ',' + r];
+    const cx = n ? n.cx : COL(c), cy = n ? n.cy : ROW(r);
+    const hw = n ? n.w / 2 : 90, hh = n ? n.h / 2 : 23;
+    x0 = Math.min(x0, cx - hw); y0 = Math.min(y0, cy - hh);
+    x1 = Math.max(x1, cx + hw); y1 = Math.max(y1, cy + hh);
+  });
+  const pad = 20;
+  const padRight = t.padRight || pad;
+  const headroom = t.headroom || 14;
+  const g = el('g', {});
+  const rect = el('rect', { x: x0 - pad, y: y0 - pad - headroom, width: (x1 - x0) + pad + padRight, height: (y1 - y0) + pad * 2 + headroom, class: 'terr' });
+  rect.style.setProperty('--th', `color-mix(in srgb, ${t.h} 10%, var(--surface))`);
+  rect.style.setProperty('--ts', t.h);
+  g.appendChild(rect);
+  const labX = (t.labelSide === 'right' ? x1 + padRight - 14 : x0 - pad + 14) + (t.labelDx || 0);
+  const lab = el('text', { x: labX, y: y0 - pad - headroom + 22, class: 'terr-label' });
+  if (t.labelSide === 'right') lab.setAttribute('text-anchor', 'end');
+  lab.style.setProperty('--ts', t.h);
+  lab.textContent = t.label;
+  terrLabelLayer.appendChild(lab);
+  terrLayer.appendChild(g);
+});
+svg.appendChild(terrLayer);
+
+function borderPoint(n, tx, ty) {
+  const dx = tx - n.cx, dy = ty - n.cy;
+  if (dx === 0 && dy === 0) return { x: n.cx, y: n.cy };
+  const hw = n.w / 2 + 3, hh = n.h / 2 + 3;
+  const s = 1 / Math.max(Math.abs(dx) / hw, Math.abs(dy) / hh);
+  return { x: n.cx + dx * s, y: n.cy + dy * s };
+}
+
+const edgeLayer = el('g', {});
+const edgeEls = edges.map((e) => {
+  const a = byId[e[0]], b = byId[e[1]];
+  const route = edgeRoutes[`${e[0]}:${e[1]}`];
+  const first = route?.[0], last = route?.[route.length - 1];
+  const s = borderPoint(a, first?.x ?? b.cx, first?.y ?? b.cy);
+  const t = borderPoint(b, last?.x ?? a.cx, last?.y ?? a.cy);
+  let d;
+  if (route) {
+    d = `M${s.x},${s.y}`;
+    route.forEach((control, i) => {
+      const next = route[i + 1];
+      const end = next ? { x: (control.x + next.x) / 2, y: (control.y + next.y) / 2 } : t;
+      d += ` Q${control.x},${control.y} ${end.x},${end.y}`;
+    });
+  } else {
+    const mx = (s.x + t.x) / 2, my = (s.y + t.y) / 2;
+    let nx = t.y - s.y, ny = -(t.x - s.x);
+    const len = Math.hypot(nx, ny) || 1;
+    const dist = Math.hypot(t.x - s.x, t.y - s.y);
+    const off = Math.min(46, dist * 0.13);
+    d = `M${s.x},${s.y} Q${mx + nx / len * off},${my + ny / len * off} ${t.x},${t.y}`;
+  }
+  const p = el('path', { class: 'edge ' + e[2], d, 'marker-end': `url(#ar-${e[2]})` });
+  edgeLayer.appendChild(p);
+  return p;
+});
+svg.appendChild(edgeLayer);
+svg.appendChild(terrLabelLayer);
+
+const nodeLayer = el('g', {});
+nodes.forEach(n => {
+  const g = el('g', { class: 'node ' + n.status, tabindex: '0', role: 'button', 'data-id': n.id, 'aria-label': `${n.label} — ${statusName[n.status]}` });
+  const cvar = statusColor[n.status];
+  const rect = el('rect', { class: 'box', x: n.cx - n.w / 2, y: n.cy - n.h / 2, width: n.w, height: n.h });
+  if (n.status !== 'goal') {
+    rect.style.setProperty('--nf', `color-mix(in srgb, var(${cvar}) 11%, var(--surface))`);
+    rect.style.setProperty('--ns', `var(${cvar})`);
+  }
+  g.appendChild(rect);
+  const lab = el('text', { class: 'label mono', x: n.cx, y: n.cy, 'text-anchor': 'middle' });
+  lab.textContent = n.label;
+  g.appendChild(lab);
+  nodeLayer.appendChild(g);
+  n._g = g;
+});
+svg.appendChild(nodeLayer);
+
+const detail = document.getElementById('detail');
+let pinned = null, activeFilter = 'all';
+
+function applyFilter() {
+  nodes.forEach(n => n._g.classList.toggle('dim', !(activeFilter === 'all' || n.status === activeFilter)));
+  edgeEls.forEach((p, i) => {
+    const [a, b] = edges[i];
+    p.classList.toggle('dim', !(activeFilter === 'all' || byId[a].status === activeFilter || byId[b].status === activeFilter));
+    p.classList.remove('hot');
+  });
+}
+
+function highlight(id) {
+  const near = new Set([id]);
+  const eidx = new Set();
+  adj[id].forEach(a => { near.add(a.other); eidx.add(a.i); });
+  nodes.forEach(n => n._g.classList.toggle('dim', !near.has(n.id)));
+  edgeEls.forEach((p, i) => { p.classList.toggle('hot', eidx.has(i)); p.classList.toggle('dim', !eidx.has(i)); });
+}
+
+function renderDetail(id) {
+  const n = byId[id];
+  const cvar = statusColor[n.status];
+  const conns = adj[id].slice().sort((a, b) => (a.dir === b.dir ? 0 : a.dir === 'in' ? -1 : 1)).map(a => {
+    const [arrow, word] = relPhrase[a.dir + '-' + a.kind];
+    const via = a.via ? `<span class="via">${a.via}</span>` : '';
+    return `<div class="c"><span class="verb ${a.kind}">${arrow} ${word}</span><span class="to">${byId[a.other].label}</span>${via}</div>`;
+  }).join('');
+  detail.innerHTML = `
+    <div class="badge" style="color:var(${cvar});border-color:var(${cvar})">${statusName[n.status]}</div>
+    <p class="title">${n.label}</p>
+    <p class="anchor">${n.anchor}</p>
+    <p class="role">${n.role}</p>
+    <div class="conns">${conns || '<p class="empty">No connections.</p>'}</div>`;
+}
+
+function clearHi() {
+  nodes.forEach(n => n._g.classList.remove('dim'));
+  edgeEls.forEach(p => { p.classList.remove('hot'); p.classList.remove('dim'); });
+  detail.innerHTML = `<p class="empty">Hover or click a node to see what it is, its Lean anchor, and every theorem it connects to.</p>
+    <p class="hint">The spine runs down the left: accepting proof → FS challenges → PC openings → AHP checks → R1CS. Green nodes are proved.</p>`;
+}
+
+nodes.forEach(n => {
+  const enter = () => { if (activeFilter !== 'all') return; highlight(n.id); renderDetail(n.id); };
+  const leave = () => {
+    if (activeFilter !== 'all') return;
+    if (pinned) { highlight(pinned); renderDetail(pinned); } else clearHi();
+  };
+  n._g.addEventListener('pointerenter', enter);
+  n._g.addEventListener('pointerleave', leave);
+  n._g.addEventListener('focus', enter);
+  n._g.addEventListener('blur', leave);
+  n._g.addEventListener('click', (e) => {
+    e.stopPropagation();
+    pinned = (pinned === n.id) ? null : n.id;
+    if (pinned) { highlight(pinned); renderDetail(pinned); }
+    else { clearHi(); if (activeFilter !== 'all') applyFilter(); }
+  });
+  n._g.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); n._g.click(); }
+  });
+});
+
+svg.addEventListener('click', () => {
+  pinned = null;
+  clearHi();
+  if (activeFilter !== 'all') applyFilter();
+});
+
+document.getElementById('filters').addEventListener('click', (e) => {
+  const b = e.target.closest('.chip');
+  if (!b) return;
+  activeFilter = b.dataset.f;
+  pinned = null;
+  document.querySelectorAll('#filters .chip').forEach(c => c.setAttribute('aria-pressed', c === b ? 'true' : 'false'));
+  if (activeFilter === 'all') clearHi();
+  else applyFilter();
+});
+</script>
+</body>
+</html>
