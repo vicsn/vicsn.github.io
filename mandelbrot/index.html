@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Die Mathe-Hecke</title>
+<meta name="description" content="Wie schneidet man mit Mathe eine Hecke? Fünf Schnitte auf einem Graphen – bis hin zur Mandelbrot-Menge.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="app">
+
+  <header class="info">
+    <p class="steptag"><span id="brand">Die Mathe-Hecke</span> <span aria-hidden="true">·</span> <span id="stepof">Schritt 1 von 5</span></p>
+    <div class="slides" id="slides"></div>
+  </header>
+
+  <main class="stage" id="stage">
+    <!-- the see-through hedge sits behind the graph -->
+    <canvas id="hedge" aria-hidden="true"></canvas>
+    <!-- step 5 only: the Mandelbrot hole and outline, drawn on the GPU so it can zoom -->
+    <canvas id="fractal" aria-hidden="true" hidden></canvas>
+    <canvas id="graph" role="img" aria-label="Graph mit einer Hecke"></canvas>
+
+    <button class="reset" id="resetbtn" type="button" aria-label="Zurücksetzen und diese Animation neu starten">
+      <svg class="glyph" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false">
+        <path d="M20 12a8 8 0 1 1-2.6-5.9"/><path d="M20 4v4.5h-4.5"/>
+      </svg>
+      <span data-i18n="reset">Zurücksetzen</span>
+    </button>
+    <!-- browsers only allow sound after a click, so the first page waits for this one -->
+    <div class="startgate" id="startgate" hidden>
+      <button class="navbtn primary" id="startbtn" type="button"><span aria-hidden="true">▶</span> <span data-i18n="start">Los geht’s</span></button>
+      <p data-i18n="startHint">Mit Ton: einmal tippen zum Starten</p>
+    </div>
+    <div class="hud">
+      <p class="closing" id="closing" hidden></p>
+      <p class="zoomtag" id="zoomtag" aria-hidden="true" hidden></p>
+    </div>
+  </main>
+
+  <footer class="bar">
+    <div class="bar-side start">
+      <button class="pill" id="voicebtn" type="button" aria-pressed="true" hidden>
+        <svg class="glyph" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false">
+          <path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5z"/>
+          <path class="waves" d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/>
+          <path class="slash" d="M4 4l16 16"/>
+        </svg>
+        <span data-i18n="voice">Vorlesen</span>
+      </button>
+      <button class="pill" id="langbtn" type="button" lang="en">
+        <svg class="glyph" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false">
+          <circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18"/>
+        </svg>
+        <span id="langlabel">English</span>
+      </button>
+    </div>
+
+    <nav class="pager" id="pager" aria-label="Schritte">
+      <!-- "Pause" while the page is still animating, "Zurück" once it is paused or done -->
+      <button class="navbtn" id="prev" type="button">
+        <span class="mode" id="prev-back" hidden><span aria-hidden="true">←</span> <span data-i18n="prev">Zurück</span></span>
+        <span class="mode" id="prev-pause"><svg class="glyph pause" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M5.5 3.5v9M10.5 3.5v9"/></svg> <span data-i18n="pause">Pause</span></span>
+      </button>
+      <ol class="dots" id="dots"></ol>
+      <button class="navbtn primary" id="next" type="button"><span data-i18n="next">Weiter</span> <span aria-hidden="true">→</span></button>
+    </nav>
+
+    <div class="bar-side end">
+      <button class="pill" id="themebtn" type="button" aria-label="Zwischen hell und dunkel wechseln">
+        <span class="tglyph" aria-hidden="true"></span><span id="themelabel">Dunkel</span>
+      </button>
+    </div>
+  </footer>
+
+  <p class="sr-only" id="announce" aria-live="polite"></p>
+</div>
+
+<noscript>
+  <p class="nojs">Bitte schalte JavaScript ein, damit die Hecke geschnitten werden kann. · Please turn on JavaScript to trim the hedge.</p>
+</noscript>
+
+<script src="app.js"></script>
+</body>
+</html>
