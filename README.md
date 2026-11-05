@@ -1,5 +1,5 @@
 # Various Prototypes
 
 - [lunchclub](./lunchclub)
-- [bundlehunt](https://bundlehunt.victor-s-nicolaas.workers.dev/)
+- [bundlehunt](https://bundle-hunt.com/)
 - [varuna](./varuna) — batching soundness and proof map
